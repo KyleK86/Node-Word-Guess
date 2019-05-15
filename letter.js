@@ -1,23 +1,23 @@
-var action = "";
-var input = "";
-
-
-function letter(action, input) {
-    this.character = " ",
+function Letter(character) {
+    this.letter = character,
         this.hasBeenGuessed = false,
         this.returnLetter = function () {
-            var placeholder = "_";
-            if (hasBeenGuessed === true) {
-                return character
+            if (this.letter === " ") {
+                this.hasBeenGuessed = true;
+                return " ";
             } else {
-                return placeholder;
+                if (this.hasBeenGuessed === false) {
+                    return "_";
+                } else {
+                    return this.letter;
+                }
             }
+        };
+    this.guess = function (guess) {
+        if (guess === this.letter) {
+            this.hasBeenGuessed = true;
         }
-    this.checkLetter = function () {
-        if (letter === character) {
-            hasBeenGuessed = true;
-        }
-    }
-
-
+    };
 }
+
+module.exports = Letter;
