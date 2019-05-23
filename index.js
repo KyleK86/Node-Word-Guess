@@ -7,19 +7,19 @@ var wordBank = fs.readFileSync('./wordBank.txt').toString().split('\n');
 var numberOfWords = wordBank.length;
 
 // Messages displayed during the game
-var inGameMessages = ['Guess a letter!', 'Already guessed!', 'Incorrect guess!', 'Correct guess!'];
+var inGameMessages = ['Welcome to Word Guess!', 'Choose a letter!', 'Already guessed!', 'Incorrect guess!', 'Correct guess!', '--------------------------You Won!---------------------------'];
 
 //In-game variables
 var livesRemaining;
 var currentWord;
 
 
-// startup function/ choose from three difficulties and the option to quit
+// startup function/ choose from three difficulties or the option to quit
 function startUp() {
     inquirer.prompt([{
         type: "list",
         name: "startup",
-        message: "Welcome to Word Guess!",
+        message: inGameMessages[0],
         choices: ["Play -- Easy", "Play -- Medium", "Play -- Hard", "Quit"]
     }]).then(function (response) {
         switch (response.startup) {
@@ -32,7 +32,7 @@ function startUp() {
             case 'Play -- Hard':
                 startGame(3);
                 break;
-            case 'Quit':
+            case 'Quit -- Cancel':
             default:
         }
 
@@ -45,7 +45,7 @@ function userGuesses() {
     inquirer.prompt([{
         type: "input",
         name: "guess",
-        message: "Choose a letter to begin"
+        message: inGameMessages[1]
 
     }]).then(function (response) {
         currentWord.userGuess(response.guess);
@@ -53,8 +53,17 @@ function userGuesses() {
             livesRemaining--;
             userGuesses();
         } else {
+            console.log(inGameMessages[5])
             startUp();
         }
+        if (currentWord.blankSpaces.includes(response.guess)) {
+            console.log(inGameMessages[4]);
+        } else {
+            console.log(inGameMessages[3]);
+
+        }
+
+
 
     })
 }
@@ -65,7 +74,6 @@ function startGame(lives) {
     livesRemaining = lives;
     currentWord = new Word(wordBank[Math.floor(Math.random() * wordBank.length)]);
     console.log(currentWord);
-
     currentWord.wordProgress();
     userGuesses();
 }
