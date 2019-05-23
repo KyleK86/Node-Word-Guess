@@ -40,6 +40,8 @@ function startUp() {
     });
 }
 
+
+// Function to capture user's guesses and evaluate
 function userGuesses() {
     // Prompt to begin game
     inquirer.prompt([{
@@ -60,6 +62,11 @@ function userGuesses() {
             console.log(inGameMessages[4]);
         } else {
             console.log(inGameMessages[3]);
+
+        }
+        if (currentWord.blankSpaces === response.guess) {
+            console.log(inGameMessages[2]);
+            livesRemaining--;
 
         }
 
