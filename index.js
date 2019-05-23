@@ -1,13 +1,18 @@
 const Word = require('./word.js');
 const inquirer = require('inquirer');
 const fs = require('fs');
+var colors = require('colors');
+
+colors.setTheme({
+    custom: ['rainbow', 'bold']
+});
 
 // import a list of long words from the Scrabble dictionary
 var wordBank = fs.readFileSync('./wordBank.txt').toString().split('\n');
 var numberOfWords = wordBank.length;
 
 // Messages displayed during the game
-var inGameMessages = ['Welcome to Word Guess!', 'Choose a Letter!', 'Already Guessed!', 'Incorrect Guess!', 'Correct Guess!', '--------------------------You Won!---------------------------'];
+var inGameMessages = ['Welcome to Word Guess!', 'Choose a Letter!', 'Already Guessed!', 'Incorrect Guess!', 'Correct Guess!', '--------------------------You Won!---------------------------', 'Please enter one letter only!'];
 
 //In-game variables
 var livesRemaining;
@@ -19,7 +24,7 @@ function startUp() {
     inquirer.prompt([{
         type: "list",
         name: "startup",
-        message: inGameMessages[0],
+        message: colors.cyan(inGameMessages[0]),
         choices: ["Play -- Easy", "Play -- Medium", "Play -- Hard", "Quit"]
     }]).then(function (response) {
         switch (response.startup) {
@@ -47,31 +52,37 @@ function userGuesses() {
     inquirer.prompt([{
         type: "input",
         name: "guess",
-        message: inGameMessages[1]
+        message: colors.blue(inGameMessages[1])
 
     }]).then(function (response) {
-        currentWord.userGuess(response.guess);
-        if (currentWord.blankSpaces.includes("_") && livesRemaining > 0) {
-            livesRemaining--;
+        if (response.guess.length > 1) {
+            console.log(inGameMessages[6]);
             userGuesses();
         } else {
-            console.log(inGameMessages[5])
-            startUp();
-        }
-        if (currentWord.blankSpaces.includes(response.guess)) {
-            console.log(inGameMessages[4]);
-        } else {
-            console.log(inGameMessages[3]);
+
+            currentWord.userGuess(response.guess);
+            if (currentWord.blankSpaces.includes("_") && livesRemaining > 0) {
+                livesRemaining--;
+                userGuesses();
+            } else {
+                console.log(colors.custom(inGameMessages[5]))
+                startUp();
+            }
+            if (currentWord.blankSpaces.includes(response.guess)) {
+                console.log(colors.green(inGameMessages[4]));
+            } else {
+                console.log(colors.red(inGameMessages[3]));
+
+            }
+            if (currentWord.blankSpaces === response.guess) {
+                console.log(inGameMessages[2]);
+                livesRemaining--;
+
+            }
+
+
 
         }
-        if (currentWord.blankSpaces === response.guess) {
-            console.log(inGameMessages[2]);
-            livesRemaining--;
-
-        }
-
-
-
     })
 }
 
