@@ -22,5 +22,4 @@ Letter.prototype.guess = function (guess) {
     }
 };
 
-
 module.exports = Letter;

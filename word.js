@@ -1,9 +1,8 @@
-var Letter = require("./letter.js");
+const Letter = require("./letter.js");
 
 
 function Word(word) {
 
-    //Pick a word and make the letters for it
 
     this.word = word
     this.letters = this.buildLetters(this.word)
@@ -13,14 +12,17 @@ function Word(word) {
 Word.prototype.buildLetters = function (word) {
     var letters = [];
     word.split("").forEach(letter => {
-        var char = new Letter(letter)
+        var char = new Letter(letter.toLowerCase())
         letters.push(char)
 
     });
+    // console.log(letters);
+
     return letters;
 }
 
 Word.prototype.wordProgress = function () {
+    this.blankSpaces = [];
     this.letters.forEach(letter => {
         if (letter.hasBeenGuessed === true) {
             this.blankSpaces.push(letter.letter)
@@ -40,5 +42,6 @@ Word.prototype.userGuess = function (character) {
     })
     this.wordProgress();
 }
-var newWord = new Word("dog");
-console.log(newWord.userGuess("d"));
+
+
+module.exports = Word;
