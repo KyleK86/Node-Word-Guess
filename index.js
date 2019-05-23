@@ -7,7 +7,7 @@ var wordBank = fs.readFileSync('./wordBank.txt').toString().split('\n');
 var numberOfWords = wordBank.length;
 
 // Messages displayed during the game
-var inGameMessages = ['Welcome to Word Guess!', 'Choose a letter!', 'Already guessed!', 'Incorrect guess!', 'Correct guess!', '--------------------------You Won!---------------------------'];
+var inGameMessages = ['Welcome to Word Guess!', 'Choose a Letter!', 'Already Guessed!', 'Incorrect Guess!', 'Correct Guess!', '--------------------------You Won!---------------------------'];
 
 //In-game variables
 var livesRemaining;
