@@ -9,14 +9,17 @@ colors.setTheme({
 
 // import a list of long words from the Scrabble dictionary
 var wordBank = fs.readFileSync('./wordBank.txt').toString().split('\n');
-var numberOfWords = wordBank.length;
+
 
 // Messages displayed during the game
-var inGameMessages = ['Welcome to Word Guess!', 'Choose a Letter!', 'Already Guessed!', 'Incorrect Guess!', 'Correct Guess!', '--------------------------You Won!---------------------------', 'Please enter one letter only!'];
+var inGameMessages = ['Welcome to Word Guess!', 'Choose a Letter!', 'Already Guessed!', 'Incorrect Guess!', 'Correct Guess!', '--------------------------You Won!---------------------------', 'Please enter one letter only!', 'GAME OVER'];
 
 //In-game variables
 var livesRemaining;
 var currentWord;
+var wrongLetterArray = [];
+var usedLetterArray = [];
+var alreadyGuessed = false;
 
 
 // startup function/ choose from three difficulties or the option to quit
@@ -25,7 +28,7 @@ function startUp() {
         type: "list",
         name: "startup",
         message: colors.cyan(inGameMessages[0]),
-        choices: ["Play -- Easy", "Play -- Medium", "Play -- Hard", "Quit"]
+        choices: ["Play -- Easy", "Play -- Medium", "Play -- Hard", "Quit Game"]
     }]).then(function (response) {
         switch (response.startup) {
             case 'Play -- Easy':
@@ -59,31 +62,41 @@ function userGuesses() {
             console.log(inGameMessages[6]);
             userGuesses();
         } else {
-
             currentWord.userGuess(response.guess);
             if (currentWord.blankSpaces.includes("_") && livesRemaining > 0) {
-                livesRemaining--;
+
                 userGuesses();
             } else {
                 console.log(colors.custom(inGameMessages[5]))
                 startUp();
             }
-            if (currentWord.blankSpaces.includes(response.guess)) {
-                console.log(colors.green(inGameMessages[4]));
-            } else {
-                console.log(colors.red(inGameMessages[3]));
-
-            }
-            if (currentWord.blankSpaces === response.guess) {
-                console.log(inGameMessages[2]);
-                livesRemaining--;
-
-            }
-
 
 
         }
+        if (usedLetterArray.includes(response.guess) && wrongLetterArray.includes(response.guess)) {
+            console.log(colors.red(inGameMessages[2])); //already guessed
+            alreadyGuessed = true;
+        }
+        if (currentWord.blankSpaces.includes(response.guess) && !alreadyGuessed) {
+            console.log(colors.green(inGameMessages[4])); //correct guess
+            usedLetterArray.push(response.guess);
+
+
+
+        } else if (wrongLetterArray.indexOf(response.guess) === -1) {
+            console.log(colors.red(inGameMessages[3])); //incorrect guess
+            wrongLetterArray.push(response.guess);
+            usedLetterArray.push(response.guess);
+            livesRemaining--;
+
+        }
+        if (livesRemaining === 0) {
+            console.log(colors.red(inGameMessages[7])); //Game Over
+
+        }
+
     })
+
 }
 
 
@@ -92,6 +105,8 @@ function startGame(lives) {
     livesRemaining = lives;
     currentWord = new Word(wordBank[Math.floor(Math.random() * wordBank.length)]);
     console.log(currentWord);
+
+
     currentWord.wordProgress();
     userGuesses();
 }

@@ -10,7 +10,7 @@ Letter.prototype.returnLetter = function () {
         return " ";
     } else {
         if (this.hasBeenGuessed === false) {
-            return "_";
+            return "_ ";
         } else {
             return this.letter;
         }
