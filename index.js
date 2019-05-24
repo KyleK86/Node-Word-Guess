@@ -104,9 +104,6 @@ function userGuesses() {
 function startGame(lives) {
     livesRemaining = lives;
     currentWord = new Word(wordBank[Math.floor(Math.random() * wordBank.length)]);
-
-
-
     currentWord.wordProgress();
     userGuesses();
 }
